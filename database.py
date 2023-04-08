@@ -14,7 +14,7 @@ def get_by_field(field: str, value: str):
 
 def get_user_by_id(user_id):
     '''Returns a user by id'''
-    return users_table.search(User.doc_id==user_id)
+    return users_table.get(doc_id=user_id)
 
 def get_user_by_email(email):
     '''Returns a user by email'''
@@ -35,17 +35,18 @@ def get_user_by_country(country):
 
 def get_users_full_name(user):
     '''Returns a user's full name'''
-    return users_table.search(User.user==user)
+    json= users_table.get(doc_id=user)
+    return f'{json["first_name"]} {json["last_name"]}'
 
 
 def update_user(user_id, field, value):
     '''Updates a user's field'''
-    return users_table.search((User.doc_id==user_id) & (User[field].search(value)))
-
+    users_table.update({field:value},doc_ids=user_id)
 def delete_user(user_id):
     '''Deletes a user'''
-    users_table.remove(delete(user_id))
+    users_table.remove(doc_ids=[user_id])
 
-def add_user(user):
+def add_user(user: dict):
     '''Adds a user to the database'''
     users_table.insert(user)
+print(update_user("mbrodest1@yale.edu"))
